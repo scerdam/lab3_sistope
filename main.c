@@ -1,14 +1,16 @@
 #include "main.h"
 
-int width,length;
-char **soup;  //matriz que representa la sopa de letra y es compartida por las hebras
+//int width,length;
+//char **soup;  //matriz que representa la sopa de letra y es compartida por las hebras
+
+float **grid; // float **H;
 
 int main(int argc, char **argv) {
 
-    srand((unsigned int) time(NULL));
+      srand((unsigned int) time(NULL));
 
-      char *file_name_in, *file_name_out = NULL;
-      int n_threads, quantity_words, flag_show_results = 0;
+      char *file_name_out = NULL;
+      int T, N, n_threads, t_iterations = 0;
 
       int index;
       int c;
@@ -16,29 +18,23 @@ int main(int argc, char **argv) {
 
       opterr = 0;
 
-      while ((c = getopt (argc, argv, "i:h:c:n:m:s:d")) != -1)
+      while ((c = getopt (argc, argv, "N:h:c:n:m:s:d")) != -1)
         switch (c)
           {
-          case 'i':
-            file_name_in = optarg;
+          case 'N':
+            N =  atoi(optarg);
             break;
-          case 'h':
-             n_threads = atoi(optarg);
-             break;
-          case 'c':
-            quantity_words = atoi(optarg);
+          case 'T':
+            T = atoi(optarg);
             break;
-          case 'n':
-            width = atoi(optarg); // cantidad filas
+          case 'H':
+            n_threads = atoi(optarg);
             break;
-          case 'm':
-           length = atoi(optarg); // cantidad columnas
-            break;
-          case 's':
+          case 'f':
             file_name_out  = optarg;
             break;
-          case 'd':
-            flag_show_results = 1;
+          case 't':
+            t_iterations = atoi(optarg);
             break;
           case '?':
             if (optopt == 'c')
@@ -56,10 +52,7 @@ int main(int argc, char **argv) {
 
       for (index = optind; index < argc; index++) printf ("No existe opcion para agumento: %s\n", argv[index]);
 
-      if(length < quantity_words){
-            printf("No caben todas las palabras en la sopa\n");
-            exit(0);
-      }
+
 
 
     soup = createSoup(width, length); //inicializa la sopa con ceros
@@ -129,21 +122,42 @@ int main(int argc, char **argv) {
         i++;
     }
 
+
+
     i=0;
-
-
     while(i < n_threads){
         pthread_join(threads[i],NULL); // esperar a que todas las hebras terminen
         i++;
     }
 
-    fillSoupRandom(soup,length,width);
 
-    writeSoup(file_name_out );
-
-    if(flag_show_results) printSoup();
 
     return 0;
+}
+
+
+
+
+
+int getSchroedingerValue(int i,int j,int t,int N){
+    if(t<=0){
+        if(i >= 0.4*N && i <= 0.6*N && j >= 0.4*N && j <= 0.6*N) return 20;
+        else return 0;
+    }
+    else return 2*getSchroedingerValue(i,j,t-1,N)-getSchroedingerValue(i,j,t-2,N)+0.0025*(getSchroedingerValue(i+1,j,t-1,N)+getSchroedingerValue(i-1,j,t-1,N)+getSchroedingerValue(i,j-1,t-1,N)+getSchroedingerValue(i,j+1,t-1,N)+4*getSchroedingerValue(i,j,t-1,N));
+
+}
+
+// escribe la matriz(grid) en el archivo de salida
+void writeGrid(int N, char *file_name_out){
+    FILE *f = fopen(file_name_out , "wb");
+    int i;
+    for(i=0;i<N;i++){
+
+        fwrite(grid[i],N,sizeof(float),f);
+
+    }
+    fclose(f);
 }
 
 
@@ -259,20 +273,6 @@ void printSoup(){
         printf("\n");
     }
     printf("\n");
-}
-
-// escribe la sopa en el achivo de salida
-void writeSoup(char *file_name_out){
-    FILE * f_out = fopen(file_name_out , "w");
-    int i,j;
-    for(i=0;i<length;i++){
-
-        for(j=0;j<width;j++){
-            fputc(soup[i][j], f_out);
-        }
-        fputc('\n',f_out);
-    }
-    fclose(f_out);
 }
 
 // Revsrva memoria y llena con ceros la matriz sopa
