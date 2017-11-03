@@ -160,6 +160,19 @@ void writeGrid(int N, char *file_name_out){
     fclose(f);
 }
 
+void createGrid(int N){
+    int i,j;
+    grid = (float**)malloc(sizeof(float*)*N);
+    for(i=0;i<N;i++){
+        grid[i] = (float*)malloc(sizeof(float)*N);
+        for(j=0;j<_N;j++){
+            grid[i][j] = 0.0;
+        }
+    }
+
+    //return soup;
+}
+
 
 // llena los espacios vacios con caracteres aleatorios
 void fillSoupRandom(char **soup, int length, int width){
@@ -273,18 +286,4 @@ void printSoup(){
         printf("\n");
     }
     printf("\n");
-}
-
-// Revsrva memoria y llena con ceros la matriz sopa
-char **createSoup(int width, int length){
-    int i,j;
-    char** soup = (char**)malloc(sizeof(char*)*length);
-    for(i=0;i<length;i++){
-        soup[i] = (char*)malloc(sizeof(char)*width);
-        for(j=0;j<width;j++){
-            soup[i][j]='0';
-        }
-    }
-
-    return soup;
 }
