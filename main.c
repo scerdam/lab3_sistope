@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
           i++;
       }
 
-      
+
 
       // int i=0;
       // while(i<n_threads){
@@ -159,11 +159,14 @@ float getSchroedingerValue(int i,int j,int t,int N){
 
 float getSchroedingerValueIterativo(int i,int j,int t,int N){
     float res = 0;
-    while(t>=0){
-        if(i >= 0.4*N && i <= 0.6*N && j >= 0.4*N && j <= 0.6*N) res = res +20;
+    int i_aux = 0;
+    while(i_aux < t){
+        if(i >= 0.4*N && i <= 0.6*N && j >= 0.4*N && j <= 0.6*N) res = res + 20;
+        
 
+        i_aux++;
     }
-
+    return res;
 }
 
 // escribe la matriz(grid) en el archivo de salida
