@@ -7,13 +7,22 @@
 #include <string.h>
 #include <time.h>
 
+//#define CLOCKS_PER_SEC 1000000
+
+typedef struct threads{
+
+    int row_start, row_end;
+    //pthread_mutex_t * mutexs;
+
+}ParamsThread;
 
 //void writeGrid(int, char *);
 //int getSchroedingerValue(int ,int ,int ,int);
 
 void writeGrid(int N, char *file_name_out);
-int getSchroedingerValue(int i,int j,int t,int N);
+float getSchroedingerValue(int i,int j,int t,int N);
 void createGrid(int N);
+void getRowsToWork(ParamsThread *p,int N, int n_threads);
 
 
 // #define MAX_WORD_LENGTH 50           // largo maximo de una palabra
