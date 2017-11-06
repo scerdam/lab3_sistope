@@ -23,6 +23,9 @@ void writeGrid(int N, char *file_name_out);
 float getSchroedingerValue(int i,int j,int t,int N);
 void createGrid(int N);
 void getRowsToWork(ParamsThread *p,int N, int n_threads);
+void *fillGrid(void *params);
+
+void printGrid();
 
 
 // #define MAX_WORD_LENGTH 50           // largo maximo de una palabra
